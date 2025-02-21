@@ -23,11 +23,10 @@ Code and equations provided for target audience modellers who analyse voltage cl
 
 ## Why another one
 
-- Chon's first papers use it, Roman's paper uses it
+- Chon's first papers use it, Roman's paper uses it, ex293 paper uses it.
 - Lei, Clark & all show its application to INa
 - Lei simulator paper will be (should be!) aimed at massive market of non-programming experiments
-- Some paper can introduce or use current clamp model
-- ex293 will simply use it
+- Some paper can still introduce or use the current clamp model
 - INa artefact paper will use it behind the scenes
-- **This** paper specifically for people who analyse voltage clamp with models, and want to _understand_ amplifier through modeling
+- **This** paper specifically for _people who analyse voltage clamp data with models_, and who want to _understand amplifier by modeling_ it.
 
