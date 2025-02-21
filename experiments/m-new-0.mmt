@@ -1,0 +1,105 @@
+[[model]]
+#
+# Model with stimulus filter, filter1, no Rs lag and a summing amp speed.
+#
+amp.Vm = 0
+amp.Vp = 0
+amp.Vo = 0
+amp.Ve = 0
+amp.Vr = 0
+amp.Vs1 = 0
+amp.Vs2 = 0
+amp.V11 = 0
+amp.V12 = 0
+amp.V13 = 0
+amp.V14 = 0
+amp.V15 = 0
+amp.V16 = 0
+
+[engine]
+time = 0 [ms] in [ms] bind time
+pace = 0 bind pace
+
+[amp]
+g = 2 [nS] in [nS]
+I = g * Vm
+    in [pA]
+alpha = 0.7
+beta = 0.7
+Rs = 5.57e-3 [GOhm] in [GOhm]
+Rs_est = 5.57e-3 [GOhm] in [GOhm]
+Cm = 20.83 [pF] in [pF]
+Cm_est = 20.83 [pF] in [pF]
+Cp = 6.71 [pF] in [pF]
+Cp_est = 6.71 [pF] in [pF]
+Rf = 0.495 [GOhm] in [GOhm]
+Cf = 0.16 [pF] in [pF]
+tau_amp = 20e-6 [ms] in [ms]
+tau_sum = 10e-3 [ms] in [ms]
+
+# Voltage clamp and compensations
+dot(Vm) = (Vp - Vm) / (Rs * Cm) - I / Cm
+    in [mV]
+dot(Vp) = ((Vo - Vp) / Rf - (Vp - Vm) / Rs +
+            Cf * dot(Vo) + Cm_est * dot(Ve) + Cp_est * dot(Vr)
+          ) / (Cp + Cf)
+    in [mV]
+dot(Vo) = (Vr - Vp) / tau_amp
+    in [mV]
+dot(Ve) = (Vs2 - Ve) / ((1 - beta) * Rs_est * Cm_est)
+    in [mV]
+dot(Vr) = (Vs2 + alpha * Rs_est / Rf * V16 + beta * Rs_est * Cm_est * dot(Ve) - Vr) / tau_sum
+    in [mV]
+
+# Input filter
+tr = 0.04 [ms] in [ms]
+a3 = 1.3616 * tr / log(9)
+    in [ms]
+Vc = engine.pace * 1 [mV]
+    in [mV]
+dot(Vs1) = 3 * ((Vc - Vs2) / a3^2 - Vs1 / a3)
+    in [mV/ms]
+dot(Vs2) = Vs1
+    desc: The 2-pole filtered stimulus
+    in [mV]
+
+# Filter 1
+f1 = 10 [kHz] in [kHz]
+a1 = 2.7034 / (2 * 3.14159 * f1)
+    in [ms]
+dot(V11) = 26.514 / a1^2 * (Vo - Vr - V12) - 5.0319 / a1 * V11
+    in [mV/ms]
+dot(V12) = V11
+    in [mV]
+dot(V13) = 20.853 / a1^2 * (V12 - V14) - 7.4714 / a1 * V13
+    in [mV/ms]
+dot(V14) = V13
+    in [mV]
+dot(V15) = 18.801 / a1^2 * (V14 - V16) - 8.4967 / a1 * V15
+    in [mV/ms]
+dot(V16) = V15
+    desc: The 6-pole filtered output
+    in [mV]
+
+# Output current (without filter2)
+I_obs = V16 / Rf
+    in [pA]
+
+[[script]]
+import myokit
+import matplotlib.pyplot as plt
+
+p = myokit.Protocol()
+p.add_step(level=-100, duration=100)
+p.add_step(level=+100, duration=100)
+
+s = myokit.Simulation(get_model(), p)
+s.set_tolerance(1e-8, 1e-8)
+s.pre(99)
+d = s.run(200)
+
+fig = plt.figure()
+ax = fig.add_subplot()
+ax.plot(d.time(), d['amp.I_obs'])
+ax.set_xlim(99.95, 101)
+plt.show()
