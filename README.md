@@ -8,10 +8,10 @@ Commercialisation and specialisation: Experimenter, Hardware expert, Modeller se
 This paper and notebooks explain patch clamp to modellers
 Code and equations provided for target audience modellers who analyse voltage clamp data, but hope figures and text also useful for experimenters
 
-## Contents
+## Paper contents
 
-1. How it works
-2. How to calibrate it / examples of quality of fit
+1. [notebooks](How it works)
+2. [experiments](How to calibrate it / examples of quality of fit)
     - I suspect that everyone can get slightly better results by refitting to their amp
     - Maaaaay redo Chon's experiments with the model cell for this (and redo mine with his cell)
 3. Implications for fitting
