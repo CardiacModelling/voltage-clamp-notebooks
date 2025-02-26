@@ -15,7 +15,7 @@ _natural_sort_regex = re.compile('([0-9]+)')
 
 def test_notebooks():
     """
-    Tests all fitting notebooks
+    Tests all voltage clamp notebooks
     """
     # Known errors, or directories to avoid
     ignore = [
