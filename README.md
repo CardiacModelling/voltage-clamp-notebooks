@@ -1,3 +1,8 @@
+# This branch:
+
+Original experiments to see if tau_sum made any sense.
+
+
 # Voltage clamp notebooks
 
 ## Intro
